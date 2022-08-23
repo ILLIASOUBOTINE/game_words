@@ -109,6 +109,8 @@ function equalArrAndGetPoint(first, second) {
     for (let i = 0; i < first.length; i++) {
         if(first[i] === second[i]){
             point++;
+        }else{
+        second[i] = second[i] + '#';
         }
     }
     return  point;
@@ -147,10 +149,20 @@ function yourFinalViewResult(elem, totalPoint, words, yourWords) {
             p.classList.add('title');
             blockYourWords.append(p); 
     for(let i = 0; i < yourWords.length; i++){
-       p = document.createElement('p');
-       p.innerText = `${yourWords[i]}`;
-       p.classList.add('p_words');
-       blockYourWords.append(p);
+       if(yourWords[i].endsWith('#')){
+          let ret = yourWords[i].slice(0, -1);
+          p = document.createElement('p');
+          p.innerText = `${ret}`;
+          p.classList.add('p_words_false');
+          blockYourWords.append(p);
+
+       }else{
+               p = document.createElement('p');
+              p.innerText = `${yourWords[i]}`;
+              p.classList.add('p_words');
+              blockYourWords.append(p);
+       }
+
     }
 
 }
@@ -159,81 +171,45 @@ let switch1 = true;
 function startProgramme(elemBtn, elemBlock ) {
     
     
-        elemBtn.addEventListener('click', function (event) {
-          if(switch1){
-            switch1 = !switch1;  
+     elemBtn.addEventListener('click', function (event) {
+            if(switch1){
+                switch1 = !switch1;
                 btnStart.innerText = '****** ';
                 elemBlock.classList.remove('field_result'); //для снятия свойст после рестарта
                 elemBlock.innerText = 'Are you ready?';
                 elemBlock.classList.add('text_start');
                 
-                console.dir(elemBlock);
-                let counter = 3;
-                const timerInterval = setInterval(function () {
-                    elemBlock.innerText = `${counter}`;
-                    counter--; 
-                    if(counter === -1 ){
-                        clearInterval(timerInterval);
-                        
-                        elemBlock.innerText = '';
-                        elemBlock.classList.remove('text_start');
-                        
-                        heart();
-                        
-                        
-                    }
-                        
-                }, 1000)
-            }    
-        
-        });
-    
-    
+                //console.dir(elemBlock);
+                const myPromise = new Promise(function(resolve, reject){
+                   let counter = 3;
+                    const timerInterval = setInterval(function () {
+                        elemBlock.innerText = `${counter}`;
+                         counter--;
+                         if(counter === -1 ){
+                            clearInterval(timerInterval);
 
-    
+                            elemBlock.innerText = '';
+                            elemBlock.classList.remove('text_start');
+                            resolve();
+
+                         }
+
+                    }, 1000)
+
+                });
+
+
+                myPromise.then(() => heart());
+
+            }
+        
+     });
 }
 
 
 
 
 
-// function heart() {
-//     let totalPoint = 0;
-//     let counter = 0;
-//     let yorWords = [];
-//     const totalMass = [];
-   
-//    const timerInterval = setInterval(function (){
-//         if(counter > 0){
-//             totalMass.push(arrElemResult);
-//             console.log(arrElemResult)
-//             arrElemResult = undefined;
-//         }
-   
-//         clearElem(mainBlock);
-//         clearElem(result);
-
-//         if (counter < words.length) {
-//             wordRendom(mainBlock, words[counter]);
-
-//             buildWord(mainBlock, result);
-
-//         }else{
-//             clearInterval(timerInterval);
-//             // console.log('TIME');
-//             // console.log(totalMass);
-//             // console.log(yourResultWords(totalMass));
-//             yorWords = yourResultWords(totalMass);
-//             totalPoint = equalArrAndGetPoint(words, yorWords);
-//             // console.log(totalPoint);
-
-//             yourFinalViewResult(mainBlock, totalPoint, words, yorWords);
-//         }
-//         counter++;
-     
-//     }, timerSpeed) 
-
-// }
 
 
 function heart() {
@@ -261,15 +237,15 @@ function heart() {
             } else if(counter === words.length){
                 clearInterval(timerInterval);
                 switch1 = !switch1;
-                yorWords = yourResultWords(totalMass);
-                totalPoint = equalArrAndGetPoint(words, yorWords);
+                yourWords = yourResultWords(totalMass);
+                totalPoint = equalArrAndGetPoint(words, yourWords);
                 btnStart.innerText = 'RESTART';
     
-                yourFinalViewResult(mainBlock, totalPoint, words, yorWords);
+                yourFinalViewResult(mainBlock, totalPoint, words, yourWords);
             }
             counter++;
     }
-   // setTimeout(foo,1);
+
    foo();
    const timerInterval = setInterval(foo, timerSpeed) 
 
