@@ -92,6 +92,11 @@
    color: #18911a;
 }
 
+.p_words_false{
+   text-align: center;
+   color: red;
+}
+
 .mybtn{
    display: block;
    position: relative;
